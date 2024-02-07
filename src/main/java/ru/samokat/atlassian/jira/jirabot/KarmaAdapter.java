@@ -55,7 +55,7 @@ public class KarmaAdapter {
                                       .chatId(chatId)
                                       .text(String.format("добавил очко токсичности %s(%s)",
                                                           userName,
-                                                          karmaRecord.getKarmaPoints())).build());
+                                                          karmaRecord.getToxicPoints())).build());
     }
 
     public Optional<BotApiMethod> decreaseToxic(String userName, long userId, long chatId) {
@@ -69,7 +69,7 @@ public class KarmaAdapter {
                                       .chatId(chatId)
                                       .text(String.format("отнял очко токсичности %s(%s)",
                                                           userName,
-                                                          karmaRecord.getKarmaPoints())).build());
+                                                          karmaRecord.getToxicPoints())).build());
     }
 
 }
