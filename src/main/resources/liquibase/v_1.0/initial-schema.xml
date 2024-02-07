@@ -18,6 +18,7 @@
             <column name="user_id" type="bigint"/>
             <column name="user_name" type="varchar(30)"/>
             <column name="karma_points" type="integer"/>
+            <column name="toxic_points" type="integer"/>
             <column name="daily_karma_points" type="integer"/>
             <column name="chat_id" type="bigint"/>
         </createTable>

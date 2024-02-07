@@ -43,4 +43,33 @@ public class KarmaAdapter {
                                                           userName,
                                                           karmaRecord.getKarmaPoints())).build());
     }
+
+    public Optional<BotApiMethod> increaseToxic(String userName, long userId, long chatId) {
+        KarmaRecord karmaRecord = karmaRepository.getByUserIdAndChatId(userId, chatId)
+                                                 .orElseGet(() -> new KarmaRecord(userId,
+                                                                                  userName,
+                                                                                  chatId));
+        karmaRecord.increaseToxic();
+        karmaRepository.save(karmaRecord);
+        return Optional.of(SendMessage.builder()
+                                      .chatId(chatId)
+                                      .text(String.format("добавил очко токсичности %s(%s)",
+                                                          userName,
+                                                          karmaRecord.getKarmaPoints())).build());
+    }
+
+    public Optional<BotApiMethod> decreaseToxic(String userName, long userId, long chatId) {
+        KarmaRecord karmaRecord = karmaRepository.getByUserIdAndChatId(userId, chatId)
+                                                 .orElseGet(() -> new KarmaRecord(userId,
+                                                                                  userName,
+                                                                                  chatId));
+        karmaRecord.decreaseToxic();
+        karmaRepository.save(karmaRecord);
+        return Optional.of(SendMessage.builder()
+                                      .chatId(chatId)
+                                      .text(String.format("отнял очко токсичности %s(%s)",
+                                                          userName,
+                                                          karmaRecord.getKarmaPoints())).build());
+    }
+
 }

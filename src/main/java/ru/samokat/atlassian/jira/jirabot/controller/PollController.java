@@ -100,10 +100,11 @@ public class PollController {
             messageText = String.format("душнота подтверждена %s голосами 'за' при %s 'против'", confirmed, declined);
             responses.add(assembleChatMessage(messageText, chatId, callbackQuery.getMessage().getReplyToMessage().getMessageId()));
             responses.add(karmaAdapter.increaseKarma(initialMessage.getFrom().getUserName(), initialMessage.getFrom().getId(), chatId).get());
+            responses.add(karmaAdapter.decreaseToxic(pollRecord.getGiverUsername(), pollRecord.getGiverId(), chatId).get());
         } else {
-            messageText = String.format("духотой и не пахнет, %s! Придется попрощаться с очком", pollRecord.getGiverUsername());
+            messageText = String.format("духотой и не пахнет, %s! Получай +1 к токсичности", pollRecord.getGiverUsername());
             responses.add(assembleChatMessage(messageText, chatId, callbackQuery.getMessage().getReplyToMessage().getMessageId()));
-            responses.add(karmaAdapter.decreaseKarma(pollRecord.getGiverUsername(), pollRecord.getGiverId(), chatId).get());
+            responses.add(karmaAdapter.increaseToxic(pollRecord.getGiverUsername(), pollRecord.getGiverId(), chatId).get());
         }
         return responses;
     }

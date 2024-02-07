@@ -28,6 +28,8 @@ public class KarmaRecord {
     private String userName;
     @Column(name = "karma_points")
     private int karmaPoints;
+    @Column(name = "toxic_points")
+    private int toxicPoints;
     @Column(name = "daily_karma_points")
     private int dailyKarmaPoints;
     @Column(name = "chat_id")
@@ -47,5 +49,13 @@ public class KarmaRecord {
     public void decreaseKarma() {
         karmaPoints--;
         dailyKarmaPoints--;
+    }
+
+    public void increaseToxic() {
+        toxicPoints++;
+    }
+
+    public void decreaseToxic() {
+        toxicPoints--;
     }
 }
