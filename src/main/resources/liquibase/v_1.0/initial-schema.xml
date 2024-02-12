@@ -64,4 +64,15 @@
                         sequenceName="poll_sequence"/>
     </changeSet>
 
+    <changeSet id="5" author="inushtaev">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="karma" columnName="toxic_points"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="karma">
+            <column name="toxic_points" type="integer"/>
+        </addColumn>
+    </changeSet>
+        
 </databaseChangeLog>
