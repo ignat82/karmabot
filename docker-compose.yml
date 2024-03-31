@@ -12,7 +12,7 @@ services:
     ports:
       - 5005:5005
     env_file:
-      - jirabot.env
+      - docker/jirabot.env
     environment:
       - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
       - SPRING_PROFILES_ACTIVE=sdk
@@ -24,4 +24,5 @@ services:
     ports:
       - 5433:5432
     env_file:
-      - jirabot.env
+      - docker/jirabot.env
+
