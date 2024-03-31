@@ -35,3 +35,6 @@ build/
 /.mvn/
 /mvnw
 /mvnw.cmd
+/docker/jirabot.env
+/docker/jira-bot-0.0.1-SNAPSHOT.jar
+/docker/jirabot.sql

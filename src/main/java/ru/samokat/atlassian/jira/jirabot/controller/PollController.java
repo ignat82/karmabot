@@ -48,9 +48,16 @@ public class PollController {
     private Optional<List<BotApiMethod>> processCallback(CallbackQuery callbackQuery) {
         List<BotApiMethod> responses = new ArrayList<>();
         responses.add(AnswerCallbackQuery.builder().callbackQueryId(callbackQuery.getId()).build());
+
         Optional<List<BotApiMethod>> selfPoll = isSelfPoll(callbackQuery);
         if (selfPoll.isPresent()) {
             responses.addAll(selfPoll.get());
+            return Optional.of(responses);
+        }
+
+        Optional<BotApiMethod> revote = isRevote(callbackQuery);
+        if (revote.isPresent()) {
+            responses.add(revote.get());
             return Optional.of(responses);
         }
 
@@ -59,8 +66,10 @@ public class PollController {
         int declined = getPolled(keyboardMarkup.getKeyboard().get(0).get(1));
         if (callbackQuery.getData().equals(CONFIRMED)) {
             confirmed++;
+            log.trace("user {} upvoted query", callbackQuery.getFrom().getUserName());
         } else {
             declined++;
+            log.trace("user {} downvoted query", callbackQuery.getFrom().getUserName());
         }
 
         if (confirmed == 3 || declined == 3) {
@@ -72,16 +81,33 @@ public class PollController {
         return Optional.of(responses);
     }
 
+    private Optional<BotApiMethod> isRevote(CallbackQuery callbackQuery) {
+        PollRecord pollRecord = pollRepository.getByChatIdAndMessageId(callbackQuery.getMessage().getChatId(),
+                                                                       callbackQuery.getMessage().getReplyToMessage().getMessageId())
+                                              .get();
+        Set<Long> pollerIds = Arrays.stream(pollRecord.getPolled().split(", "))
+                                    .map(Long::parseLong)
+                                    .collect(Collectors.toSet());
+        if (pollerIds.contains(callbackQuery.getFrom().getId())) {
+            log.trace("{} has voted already", callbackQuery.getFrom().getUserName());
+            String messageText = String.format("%s, а ты ведь не от большого ума несколько раз голосуешь?",
+                                               callbackQuery.getFrom().getUserName());
+            return Optional.of(assembleChatMessage(messageText, callbackChatId(callbackQuery), polledMessageId(callbackQuery)));
+        } else {
+            return Optional.empty();
+        }
+    }
+
     private Optional<List<BotApiMethod>> isSelfPoll(CallbackQuery callbackQuery) {
         User voter = callbackQuery.getFrom();
         if (!callbackQuery.getMessage().getReplyToMessage().getFrom().equals(voter)) {
             return Optional.empty();
         }
         List<BotApiMethod> responses = new ArrayList<>();
-        String message = String.format("%s, Вы же в курсе, что за себя голосовать грешновато? ОЧКО НА СТОЛ!!!",
+        String message = String.format("%s, Вы же в курсе, что за себя голосовать грешновато, и голосуете. Так сильно очко манит?",
                                        voter.getUserName());
         responses.add(assembleChatMessage(message, callbackQuery.getMessage().getChatId()));
-        responses.add(karmaAdapter.decreaseKarma(voter.getUserName(), voter.getId(), callbackChatId(callbackQuery)).get());
+        log.trace("user {} tried selfvote", callbackQuery.getFrom().getUserName());
         return Optional.of(responses);
     }
 
@@ -100,10 +126,12 @@ public class PollController {
             messageText = String.format("душнота подтверждена %s голосами 'за' при %s 'против'", confirmed, declined);
             responses.add(assembleChatMessage(messageText, chatId, callbackQuery.getMessage().getReplyToMessage().getMessageId()));
             responses.add(karmaAdapter.increaseKarma(initialMessage.getFrom().getUserName(), initialMessage.getFrom().getId(), chatId).get());
+            log.trace("poll closed. recipient {} received karma point", callbackQuery.getFrom().getUserName());
         } else {
             messageText = String.format("духотой и не пахнет, %s! Придется попрощаться с очком", pollRecord.getGiverUsername());
             responses.add(assembleChatMessage(messageText, chatId, callbackQuery.getMessage().getReplyToMessage().getMessageId()));
             responses.add(karmaAdapter.decreaseKarma(pollRecord.getGiverUsername(), pollRecord.getGiverId(), chatId).get());
+            log.trace("poll closed. giver {} lost karma point", callbackQuery.getFrom().getUserName());
         }
         return responses;
     }
@@ -112,15 +140,6 @@ public class PollController {
         PollRecord pollRecord = pollRepository.getByChatIdAndMessageId(callbackQuery.getMessage().getChatId(),
                                                                        callbackQuery.getMessage().getReplyToMessage().getMessageId())
                                               .get();
-        Set<Long> pollerIds = Arrays.stream(pollRecord.getPolled().split(", "))
-                                    .map(Long::parseLong)
-                                    .collect(Collectors.toSet());
-        if (pollerIds.contains(callbackQuery.getFrom().getId())) {
-            log.trace("user voted already");
-            String messageText = String.format("%s, а ты ведь не от большого ума несколько раз голосуешь?",
-                                               callbackQuery.getFrom().getUserName());
-            return assembleChatMessage(messageText, callbackChatId(callbackQuery), polledMessageId(callbackQuery));
-        }
         pollRecord.setPolled(pollRecord.getPolled().concat(", ").concat(callbackQuery.getFrom().getId().toString()));
         pollRepository.save(pollRecord);
         return EditMessageReplyMarkup.builder()

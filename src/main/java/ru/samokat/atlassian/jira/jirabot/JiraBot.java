@@ -32,7 +32,6 @@ public class JiraBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        log.debug("onUpdateReceived()");
 
         Optional<List<BotApiMethod>> responses = Optional.empty();
         boolean isTextMessage = update.getMessage() != null && update.getMessage().getText() != null;
