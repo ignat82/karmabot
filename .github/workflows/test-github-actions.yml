@@ -33,7 +33,7 @@ jobs:
           port: ${{ secrets.JIRABOT_HOST_PORT }}
           source: "./github/workspace"
           target: "/home/user1/test"
-          strip_components: 3
+#          strip_components: 3
 
 #            # SSH into the remote host and trigger docker-compose
 #            ssh ${{ secrets.JIRABOT_HOST_USER }}@${{ secrets.JIRABOT_HOST }} 'cd /opt/jirabot_project/karmabot && docker-compose up --build'
