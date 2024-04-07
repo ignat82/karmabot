@@ -32,6 +32,9 @@ jobs:
           username: ${{ secrets.JIRABOT_HOST_USER }}
           key: ${{ secrets.JIRABOT_HOST_SSH_KEY }}
           script: |
+            # SSH into the remote host with StrictHostKeyChecking disabled
+            ssh -o "StrictHostKeyChecking no" ${{ secrets.JIRABOT_HOST_USER }}@${{ secrets.JIRABOT_HOST }}
+
             # Change directory to the GitHub repository root
             cd $GITHUB_WORKSPACE
 
