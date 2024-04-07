@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo "The job was triggered by a ${{ github.event_name }} event."
-      - run: echo "secret is $secret"
-        with:
-          secret: ${{ secrets.TEST_SECRET }}
+      - run: |
+          secret_value=${{ secrets.TEST_SECRET }}
+          echo "secret is $secret_value"
 
 
