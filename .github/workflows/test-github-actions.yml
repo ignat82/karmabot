@@ -39,6 +39,7 @@ jobs:
           host: ${{ secrets.JIRABOT_HOST }}
           username: ${{ secrets.JIRABOT_HOST_USER }}
           key: ~/.ssh/id_rsa
+          port: 22
           script: |
             # SSH into the remote host with StrictHostKeyChecking disabled
             ssh -o "StrictHostKeyChecking no" ${{ secrets.JIRABOT_HOST_USER }}@${{ secrets.JIRABOT_HOST }}
