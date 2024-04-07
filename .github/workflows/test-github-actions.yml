@@ -21,8 +21,8 @@ jobs:
         run: |
           mkdir ../build
           cp -TR . ../build
-          tar -cvf deploy.tar ../build/
-        
+#          tar -cvf deploy.tar ../
+
 
       - name: Push source files to remote host
         uses: appleboy/scp-action@master
@@ -31,7 +31,7 @@ jobs:
           username: ${{ secrets.JIRABOT_HOST_USER }}
           key: ${{ secrets.JIRABOT_HOST_SSH_KEY }}
           port: ${{ secrets.JIRABOT_HOST_PORT }}
-          source: "deploy.tar"
+          source: "../build"
           target: "/home/user1/test"
 
 #            # SSH into the remote host and trigger docker-compose
