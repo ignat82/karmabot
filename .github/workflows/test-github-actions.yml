@@ -17,10 +17,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Pack src to archive
-        run: |
-          mkdir ../build
-          cp -TR . ../build
+#      - name: Pack src to archive
+#        run: |
+#          mkdir ../build
+#          cp -TR . ../build
 #          tar -cvf deploy.tar ../
 
 
@@ -31,7 +31,7 @@ jobs:
           username: ${{ secrets.JIRABOT_HOST_USER }}
           key: ${{ secrets.JIRABOT_HOST_SSH_KEY }}
           port: ${{ secrets.JIRABOT_HOST_PORT }}
-          source: "../build"
+          source: "/github/workspace"
           target: "/home/user1/test"
 
 #            # SSH into the remote host and trigger docker-compose
