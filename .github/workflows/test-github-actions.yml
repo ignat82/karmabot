@@ -10,13 +10,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo "The job was triggered by a ${{ github.event_name }} event."
+
+  setup-node:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+
   deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        with:
-          node-version: '20'
 
       - name: SSH into remote host, push source files, and trigger docker-compose
         uses: appleboy/ssh-action@master
