@@ -31,7 +31,7 @@ jobs:
           username: ${{ secrets.JIRABOT_HOST_USER }}
           key: ${{ secrets.JIRABOT_HOST_SSH_KEY }}
           port: ${{ secrets.JIRABOT_HOST_PORT }}
-          source: "/home/runner/work/karmabot/karmabot"
+          source: "./*"
           target: "/home/user1/test"
 #          strip_components: 3
 
