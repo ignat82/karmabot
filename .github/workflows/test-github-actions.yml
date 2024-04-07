@@ -1,0 +1,14 @@
+name: deploy-jira-bot
+run-name: ${{ github.actor }} is pushing source code to host to deploy jira-bot there
+on:
+  pull_request:
+    types:
+      - closed
+  workflow_dispatch:
+jobs:
+  print-message:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "The job was triggered by a ${{ github.event_name }} event."
+
+
