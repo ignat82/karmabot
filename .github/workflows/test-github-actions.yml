@@ -25,30 +25,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Create SSH Directory
-        run: mkdir -p ~/.ssh
-
-      - name: Set Permissions on SSH Key
-        run: |
-          echo "${{ secrets.JIRABOT_HOST_SSH_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa  
-
       - name: SSH into remote host, push source files, and trigger docker-compose
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.JIRABOT_HOST }}
           username: ${{ secrets.JIRABOT_HOST_USER }}
-          key: ~/.ssh/id_rsa
-          port: 22
-          script: |
-            # SSH into the remote host with StrictHostKeyChecking disabled
-            ssh -o "StrictHostKeyChecking no" ${{ secrets.JIRABOT_HOST_USER }}@${{ secrets.JIRABOT_HOST }}
-
-            # Change directory to the GitHub repository root
-            cd $GITHUB_WORKSPACE
-
-            # Copy source files to the remote host
-            scp -i ~/.ssh/id_rsa -r ./* ${{ secrets.JIRABOT_HOST_USER }}@${{ secrets.JIRABOT_HOST }}:/home/user1/test
+          key: ${{ secrets.JIRABOT_HOST_SSH_KEY }}
+          port: ${{ secrets.JIRABOT_HOST_PORT }}
+          source: "./*"
+          target: "/home/user1/test"
 
 #            # SSH into the remote host and trigger docker-compose
 #            ssh ${{ secrets.JIRABOT_HOST_USER }}@${{ secrets.JIRABOT_HOST }} 'cd /opt/jirabot_project/karmabot && docker-compose up --build'
