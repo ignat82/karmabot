@@ -11,5 +11,5 @@ import java.util.Optional;
 public interface KarmaRepository extends JpaRepository<KarmaRecord, Long> {
     Optional<KarmaRecord> getByUserIdAndChatId(long userId, long chatId);
     Optional<List<KarmaRecord>> getByChatId(long chatId);
-    Optional<List<KarmaRecord>> getAll();
+    List<KarmaRecord> findAll();
  }
