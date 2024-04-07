@@ -9,6 +9,7 @@ import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import ru.samokat.atlassian.jira.jirabot.JiraBot;
+import ru.samokat.atlassian.jira.jirabot.controller.ActionsController;
 import ru.samokat.atlassian.jira.jirabot.controller.CommandController;
 import ru.samokat.atlassian.jira.jirabot.controller.PollController;
 
@@ -20,12 +21,14 @@ public class JiraBotConfiguration {
     @Bean
     public JiraBot registerBot(CommandController commandController,
                                PollController pollController,
+                               ActionsController actionsController,
                                @Value("${ru.samokat.atlassian.jira.jirabot.token}") String botToken)
             throws TelegramApiException {
         log.debug("registerBot()");
-        JiraBot jiraBot = new JiraBot(commandController, pollController, botToken);
+        JiraBot jiraBot = new JiraBot(commandController, pollController, actionsController, botToken);
         TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
         botsApi.registerBot(jiraBot);
+        jiraBot.giveVoice();
         return jiraBot;
     }
 }

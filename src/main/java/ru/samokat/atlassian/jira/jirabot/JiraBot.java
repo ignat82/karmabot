@@ -6,6 +6,7 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import ru.samokat.atlassian.jira.jirabot.controller.ActionsController;
 import ru.samokat.atlassian.jira.jirabot.controller.CommandController;
 import ru.samokat.atlassian.jira.jirabot.controller.PollController;
 
@@ -17,6 +18,7 @@ import java.util.Optional;
 public class JiraBot extends TelegramLongPollingBot {
     private final CommandController commandController;
     private final PollController pollController;
+    private final ActionsController actionsController;
     private final String BOT_TOKEN;
     private static final String BOT_USERNAME = "samokat_jira_bot";
 
@@ -43,14 +45,27 @@ public class JiraBot extends TelegramLongPollingBot {
              responses = commandController.handleUpdate(update);
          }
 
-        responses.ifPresent(responces -> responces.forEach(resp -> {
+        responses.ifPresent(responsesList -> responsesList.forEach(resp -> {
             try {
-                execute(resp);                        //Actually sending the message
+                execute(resp);
             } catch (TelegramApiException e) {
                 log.warn("caught an exception {} with message {} while sending message",
                          e.getClass().getSimpleName(),
                          e.getMessage());
 
+            }
+        }));
+    }
+
+    public void giveVoice() {
+        log.debug("giveVoice()");
+        actionsController.getUpdateMessages().ifPresent(messages -> messages.forEach(message -> {
+            try {
+                execute(message);
+            } catch (TelegramApiException e) {
+                log.warn("caught an exception {} with message {} while sending message",
+                         e.getClass().getSimpleName(),
+                         e.getMessage());
             }
         }));
     }
