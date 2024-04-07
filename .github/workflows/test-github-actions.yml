@@ -11,28 +11,19 @@ jobs:
     steps:
       - run: echo "The job was triggered by a ${{ github.event_name }} event."
 
-  setup-node:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '20'
-
   deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: SSH into remote host, push source files, and trigger docker-compose
-        uses: appleboy/ssh-action@master
+      - name: Push source files to remote host
+        uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.JIRABOT_HOST }}
           username: ${{ secrets.JIRABOT_HOST_USER }}
           key: ${{ secrets.JIRABOT_HOST_SSH_KEY }}
           port: ${{ secrets.JIRABOT_HOST_PORT }}
-          source: "/home/runner/work/karmabot/karmabot/*"
           target: "/home/user1/test"
 
 #            # SSH into the remote host and trigger docker-compose
