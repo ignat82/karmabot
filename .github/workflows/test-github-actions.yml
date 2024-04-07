@@ -25,6 +25,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Create SSH Directory
+        run: mkdir -p ~/.ssh
+
       - name: Set Permissions on SSH Key
         run: |
           echo "${{ secrets.JIRABOT_HOST_SSH_KEY }}" > ~/.ssh/id_rsa
