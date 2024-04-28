@@ -26,7 +26,8 @@ public class KarmaAdapter {
         pointRepository.save(pointRecord);
         return Optional.of(SendMessage.builder()
                                       .chatId(chatId)
-                                      .text(String.format("добавил очко душноты %s(%s)",
+                                      .text(String.format("добавил очко %s %s(%s)",
+                                                          pointType.getDecreaseVote(),
                                                           userName,
                                                           pointRecord.getPoints())).build());
     }
@@ -41,7 +42,8 @@ public class KarmaAdapter {
         pointRepository.save(pointRecord);
         return Optional.of(SendMessage.builder()
                                       .chatId(chatId)
-                                      .text(String.format("отнял очко душноты %s(%s)",
+                                      .text(String.format("отнял очко %s %s(%s)",
+                                                          pointType.getDecreaseVote(),
                                                           userName,
                                                           pointRecord.getPoints())).build());
     }

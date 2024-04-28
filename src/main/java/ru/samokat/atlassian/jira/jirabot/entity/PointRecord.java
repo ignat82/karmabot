@@ -59,13 +59,14 @@ public class PointRecord {
 
     @Getter
     public enum PointType {
-        KARMA("+", "душно", "душнота", "духотой", "/karma", "душнил"),
-        TOXICITY("++", "токсично", "токсичность", "токсичностью", "/toxicity", "токсиков");
+        KARMA("+", "душно", "душнота", "духотой", "душноты", "/karma", "душнил"),
+        TOXICITY("++", "токсично", "токсичность", "токсичностью", "токсичности", "/toxicity", "токсиков");
 
         private final String createCommand;
         private final String votePrompt;
         private final String voteSuccess;
         private final String voteFail;
+        private final String decreaseVote;
         private final String ratingCommand;
         private final String ratingTerm;
         private static final Map<String, PointType> BY_CREATE_COMMAND = Arrays.stream(PointType.values())
@@ -85,12 +86,14 @@ public class PointRecord {
                   String votePrompt,
                   String voteSuccess,
                   String voteFail,
+                  String decreaseVote,
                   String ratingCommand,
                   String ratingTerm) {
             this.createCommand = createCommand;
             this.votePrompt = votePrompt;
             this.voteSuccess = voteSuccess;
             this.voteFail = voteFail;
+            this.decreaseVote = decreaseVote;
             this.ratingCommand = ratingCommand;
             this.ratingTerm = ratingTerm;
         }
