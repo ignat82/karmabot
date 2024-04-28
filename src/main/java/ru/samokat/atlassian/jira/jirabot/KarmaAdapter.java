@@ -21,7 +21,7 @@ public class KarmaAdapter {
                                                  .orElseGet(() -> new PointRecord(userId,
                                                                                   userName,
                                                                                   chatId,
-                                                                                  pointType));
+                                                                                  pointType.name()));
         pointRecord.addPoint();
         pointRepository.save(pointRecord);
         return Optional.of(SendMessage.builder()
@@ -36,7 +36,7 @@ public class KarmaAdapter {
                                                  .orElseGet(() -> new PointRecord(userId,
                                                                                   userName,
                                                                                   chatId,
-                                                                                  pointType));
+                                                                                  pointType.name()));
         pointRecord.deductPoint();
         pointRepository.save(pointRecord);
         return Optional.of(SendMessage.builder()

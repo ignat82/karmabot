@@ -75,7 +75,7 @@
             <column name="daily_toxicity_points" type="integer"/>
         </addColumn>
     </changeSet>
-    <changeSet id="11" author="inushtaev">
+    <changeSet id="13" author="inushtaev">
         <preConditions onFail="MARK_RAN">
             <not>
                 <columnExists tableName="karma" columnName="point_type"/>
@@ -85,7 +85,7 @@
             <column name="point_type" type="varchar(30)"/>
         </addColumn>
     </changeSet>
-    <changeSet id="12" author="inushtaev">
+    <changeSet id="14" author="inushtaev">
         <preConditions onFail="MARK_RAN">
             <not>
                 <columnExists tableName="poll" columnName="point_type"/>

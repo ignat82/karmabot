@@ -40,11 +40,11 @@ public class PointRecord {
     @Column(name = "chat_id")
     private long chatId;
 
-    public PointRecord(long userId, String userName, long chatId, PointType pointType) {
+    public PointRecord(long userId, String userName, long chatId, String pointTypeName) {
         this.userId = userId;
         this.userName = userName;
         this.chatId = chatId;
-        this.pointTypeName = pointType.name();
+        this.pointTypeName = pointTypeName;
     }
 
     public void addPoint() {
