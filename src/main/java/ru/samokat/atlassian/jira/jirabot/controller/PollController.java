@@ -127,7 +127,7 @@ public class PollController {
         String messageText;
         long chatId = callbackQuery.getMessage().getChatId();
 
-        PointRecord.PointType pointType = pollRecord.getPointType();
+        PointRecord.PointType pointType = PointRecord.PointType.valueOf(pollRecord.getPointTypeName());
 
         if (confirmed == 3) {
             messageText = String.format("%s подтверждена %s голосами 'за' при %s 'против'", pointType.getVotePrompt(), confirmed, declined);
@@ -135,7 +135,7 @@ public class PollController {
             responses.add(karmaAdapter.addPoint(initialMessage.getFrom().getUserName(),
                                                 initialMessage.getFrom().getId(),
                                                 chatId,
-                                                pollRecord.getPointType()).get());
+                                                PointRecord.PointType.valueOf(pollRecord.getPointTypeName())).get());
             log.trace("poll closed. recipient {} received karma point", callbackQuery.getFrom().getUserName());
         } else {
             messageText = String.format("%s и не пахнет, %s! Придется попрощаться с очком", pointType.getVoteFail(), pollRecord.getGiverUsername());
@@ -143,7 +143,7 @@ public class PollController {
             responses.add(karmaAdapter.deductPoint(pollRecord.getGiverUsername(),
                                                    pollRecord.getGiverId(),
                                                    chatId,
-                                                   pollRecord.getPointType()).get());
+                                                   PointRecord.PointType.valueOf(pollRecord.getPointTypeName())).get());
             log.trace("poll closed. giver {} lost karma point", callbackQuery.getFrom().getUserName());
         }
         return responses;
@@ -155,7 +155,7 @@ public class PollController {
         return EditMessageReplyMarkup.builder()
                                      .chatId(callbackQuery.getMessage().getChatId())
                                      .messageId(callbackQuery.getMessage().getMessageId())
-                                     .replyMarkup(createPollMarkUp(confirmed, declined, pollRecord.getPointType()))
+                                     .replyMarkup(createPollMarkUp(confirmed, declined, PointRecord.PointType.valueOf(pollRecord.getPointTypeName())))
                                      .build();
     }
 
@@ -171,6 +171,7 @@ public class PollController {
         log.debug("createPoll()");
 
         if (message.getReplyToMessage() == null) {
+            log.warn("no message to poll about");
             return Optional.empty();
         }
 

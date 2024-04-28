@@ -36,7 +36,7 @@ public class PointRecord {
     @Column(name = "daily_karma_points")
     private int dailyPoints;
     @Column(name = "point_type")
-    private PointType pointType;
+    private String pointTypeName;
     @Column(name = "chat_id")
     private long chatId;
 
@@ -44,7 +44,7 @@ public class PointRecord {
         this.userId = userId;
         this.userName = userName;
         this.chatId = chatId;
-        this.pointType = pointType;
+        this.pointTypeName = pointType.name();
     }
 
     public void addPoint() {

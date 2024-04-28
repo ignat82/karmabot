@@ -25,8 +25,10 @@ public class DebuggerController {
                    @PathVariable String chatId,
                    @PathVariable PointRecord.PointType pointType) {
         log.debug("test({}, {})", userId, chatId);
-        Optional<PointRecord> pointRecord = pointRepository.getByUserIdAndChatIdAndPointType(Long.parseLong(userId),
-                                                                                             Long.parseLong(chatId), pointType);
+        Optional<PointRecord> pointRecord =
+                pointRepository.getByUserIdAndChatIdAndPointTypeName(Long.parseLong(userId),
+                                                                     Long.parseLong(chatId),
+                                                                     pointType.name());
         log.trace("got pointRecord {}", gson.toJson(pointRecord));
 
     }

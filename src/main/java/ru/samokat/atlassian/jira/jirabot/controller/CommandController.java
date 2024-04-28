@@ -40,7 +40,7 @@ public class CommandController {
 
     public Optional<List<BotApiMethod>> assembleRatingForChat(long chatId, PointRecord.PointType pointType) {
         String messagePrefix = String.format("рейтинг %s на сегодня:\n\n", pointType.getRatingTerm());
-        String rating = pointRepository.getByChatIdAndPointType(chatId, pointType)
+        String rating = pointRepository.getByChatIdAndPointTypeName(chatId, pointType.name())
                                        .map(ratingList -> {
                                           ratingList.sort(Comparator.comparingInt(PointRecord::getDailyPoints).reversed());
                                           return ratingList.isEmpty()

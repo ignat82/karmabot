@@ -17,7 +17,7 @@ public class KarmaAdapter {
     private final PointRepository pointRepository;
 
     public Optional<BotApiMethod> addPoint(String userName, long userId, long chatId, PointRecord.PointType pointType) {
-        PointRecord pointRecord = pointRepository.getByUserIdAndChatIdAndPointType(userId, chatId, pointType)
+        PointRecord pointRecord = pointRepository.getByUserIdAndChatIdAndPointTypeName(userId, chatId, pointType.name())
                                                  .orElseGet(() -> new PointRecord(userId,
                                                                                   userName,
                                                                                   chatId,
@@ -32,7 +32,7 @@ public class KarmaAdapter {
     }
 
     public Optional<BotApiMethod> deductPoint(String userName, long userId, long chatId, PointRecord.PointType pointType) {
-        PointRecord pointRecord = pointRepository.getByUserIdAndChatIdAndPointType(userId, chatId, pointType)
+        PointRecord pointRecord = pointRepository.getByUserIdAndChatIdAndPointTypeName(userId, chatId, pointType.name())
                                                  .orElseGet(() -> new PointRecord(userId,
                                                                                   userName,
                                                                                   chatId,

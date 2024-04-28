@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface PointRepository extends JpaRepository<PointRecord, Long> {
-    Optional<PointRecord> getByUserIdAndChatIdAndPointType(long userId, long chatId, PointRecord.PointType pointType);
-    Optional<List<PointRecord>> getByChatIdAndPointType(long chatId, PointRecord.PointType pointType);
+    Optional<PointRecord> getByUserIdAndChatIdAndPointTypeName(long userId, long chatId, String pointTypeName);
+    Optional<List<PointRecord>> getByChatIdAndPointTypeName(long chatId, String pointTypeName);
     List<PointRecord> findAll();
  }

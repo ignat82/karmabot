@@ -35,7 +35,7 @@ public class PollRecord {
     @Column(name = "polled")
     private String polled;
     @Column(name = "point_type")
-    private PointRecord.PointType pointType;
+    private String pointTypeName;
 
     public PollRecord(long chatId,
                       long messageId,
@@ -49,7 +49,7 @@ public class PollRecord {
         this.giverUsername = giverUsername;
         this.recipientId = recipientId;
         this.polled = String.valueOf(giverId);
-        this.pointType = pointType;
+        this.pointTypeName = pointType.name();
     }
 
 }
