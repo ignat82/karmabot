@@ -64,4 +64,35 @@
                         sequenceName="poll_sequence"/>
     </changeSet>
 
+    <changeSet id="5" author="inushtaev">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="karma" columnName="toxicity_points"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="karma">
+            <column name="toxicity_points" type="integer"/>
+            <column name="daily_toxicity_points" type="integer"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="8" author="inushtaev">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="karma" columnName="point_type"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="karma">
+            <column name="point_type" type="smallint"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="10" author="inushtaev">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="poll" columnName="point_type"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="poll">
+            <column name="point_type" type="smallint"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

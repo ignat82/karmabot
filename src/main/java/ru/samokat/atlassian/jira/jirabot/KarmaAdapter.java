@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import ru.samokat.atlassian.jira.jirabot.entity.KarmaRecord;
-import ru.samokat.atlassian.jira.jirabot.repository.KarmaRepository;
+import ru.samokat.atlassian.jira.jirabot.entity.PointRecord;
+import ru.samokat.atlassian.jira.jirabot.repository.PointRepository;
 
 import java.util.Optional;
 
@@ -14,33 +14,35 @@ import java.util.Optional;
 @Slf4j
 @RequiredArgsConstructor
 public class KarmaAdapter {
-    private final KarmaRepository karmaRepository;
+    private final PointRepository pointRepository;
 
-    public Optional<BotApiMethod> increaseKarma(String userName, long userId, long chatId) {
-        KarmaRecord karmaRecord = karmaRepository.getByUserIdAndChatId(userId, chatId)
-                                                 .orElseGet(() -> new KarmaRecord(userId,
+    public Optional<BotApiMethod> addPoint(String userName, long userId, long chatId, PointRecord.PointType pointType) {
+        PointRecord pointRecord = pointRepository.getByUserIdAndChatIdAndPointType(userId, chatId, pointType)
+                                                 .orElseGet(() -> new PointRecord(userId,
                                                                                   userName,
-                                                                                  chatId));
-        karmaRecord.increaseKarma();
-        karmaRepository.save(karmaRecord);
+                                                                                  chatId,
+                                                                                  pointType));
+        pointRecord.addPoint();
+        pointRepository.save(pointRecord);
         return Optional.of(SendMessage.builder()
                                       .chatId(chatId)
                                       .text(String.format("добавил очко душноты %s(%s)",
                                                           userName,
-                                                          karmaRecord.getKarmaPoints())).build());
+                                                          pointRecord.getPoints())).build());
     }
 
-    public Optional<BotApiMethod> decreaseKarma(String userName, long userId, long chatId) {
-        KarmaRecord karmaRecord = karmaRepository.getByUserIdAndChatId(userId, chatId)
-                                                 .orElseGet(() -> new KarmaRecord(userId,
+    public Optional<BotApiMethod> deductPoint(String userName, long userId, long chatId, PointRecord.PointType pointType) {
+        PointRecord pointRecord = pointRepository.getByUserIdAndChatIdAndPointType(userId, chatId, pointType)
+                                                 .orElseGet(() -> new PointRecord(userId,
                                                                                   userName,
-                                                                                  chatId));
-        karmaRecord.decreaseKarma();
-        karmaRepository.save(karmaRecord);
+                                                                                  chatId,
+                                                                                  pointType));
+        pointRecord.deductPoint();
+        pointRepository.save(pointRecord);
         return Optional.of(SendMessage.builder()
                                       .chatId(chatId)
                                       .text(String.format("отнял очко душноты %s(%s)",
                                                           userName,
-                                                          karmaRecord.getKarmaPoints())).build());
+                                                          pointRecord.getPoints())).build());
     }
 }

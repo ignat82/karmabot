@@ -1,13 +1,13 @@
 package ru.samokat.atlassian.jira.jirabot.rest;
 
+import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import ru.samokat.atlassian.jira.jirabot.JiraBot;
-import ru.samokat.atlassian.jira.jirabot.entity.KarmaRecord;
-import ru.samokat.atlassian.jira.jirabot.repository.KarmaRepository;
+import ru.samokat.atlassian.jira.jirabot.entity.PointRecord;
+import ru.samokat.atlassian.jira.jirabot.repository.PointRepository;
 
 import java.util.Optional;
 
@@ -15,15 +15,19 @@ import java.util.Optional;
 @Slf4j
 @RequiredArgsConstructor
 public class DebuggerController {
-    private final JiraBot jiraBot;
-    private final KarmaRepository karmaRepository;
+    private final PointRepository pointRepository;
+    private final Gson gson;
 
 
 
-    @GetMapping("/pick_karma/{userId}/{chatId}")
-    void pickKarma(@PathVariable String userId, @PathVariable String chatId) {
+    @GetMapping("/pick_karma/{userId}/{chatId}/{pointType}")
+    void pickKarma(@PathVariable String userId,
+                   @PathVariable String chatId,
+                   @PathVariable PointRecord.PointType pointType) {
         log.debug("test({}, {})", userId, chatId);
-        Optional<KarmaRecord> karmaRecord = karmaRepository.getByUserIdAndChatId(Long.parseLong(userId), Long.parseLong(chatId));
+        Optional<PointRecord> pointRecord = pointRepository.getByUserIdAndChatIdAndPointType(Long.parseLong(userId),
+                                                                                             Long.parseLong(chatId), pointType);
+        log.trace("got pointRecord {}", gson.toJson(pointRecord));
 
     }
 

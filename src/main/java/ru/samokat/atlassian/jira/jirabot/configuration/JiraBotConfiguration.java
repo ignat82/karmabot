@@ -1,5 +1,7 @@
 package ru.samokat.atlassian.jira.jirabot.configuration;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -30,5 +32,12 @@ public class JiraBotConfiguration {
         botsApi.registerBot(jiraBot);
         jiraBot.giveVoice();
         return jiraBot;
+    }
+
+    @Bean Gson gson() {
+        return new GsonBuilder()
+                .setPrettyPrinting()
+                .create();
+
     }
 }

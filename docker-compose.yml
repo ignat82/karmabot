@@ -15,14 +15,14 @@ services:
       - docker/jirabot.env
     environment:
       - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
-      - SPRING_PROFILES_ACTIVE=sdk
+      - SPRING_PROFILES_ACTIVE=debug
       - spring.datasource.dialect=org.hibernate.dialect.PostgreSQL14Dialect
 
   db:
     image: 'postgres:14-alpine'
     container_name: db
     ports:
-      - 5433:5432
+      - "5434:5432"
     env_file:
       - docker/jirabot.env
 

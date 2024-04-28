@@ -34,15 +34,22 @@ public class PollRecord {
     private long recipientId;
     @Column(name = "polled")
     private String polled;
+    @Column(name = "point_type")
+    private PointRecord.PointType pointType;
 
-
-    public PollRecord(long chatId, long messageId, long giverId, String giverUsername, long recipientId) {
+    public PollRecord(long chatId,
+                      long messageId,
+                      long giverId,
+                      String giverUsername,
+                      long recipientId,
+                      PointRecord.PointType pointType) {
         this.chatId = chatId;
         this.messageId = messageId;
         this.giverId = giverId;
         this.giverUsername = giverUsername;
         this.recipientId = recipientId;
         this.polled = String.valueOf(giverId);
+        this.pointType = pointType;
     }
 
 }

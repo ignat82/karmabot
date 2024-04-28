@@ -38,3 +38,4 @@ build/
 /docker/jirabot.env
 /docker/jira-bot-0.0.1-SNAPSHOT.jar
 /docker/jirabot.sql
+/src/main/resources/application-debug.properties
