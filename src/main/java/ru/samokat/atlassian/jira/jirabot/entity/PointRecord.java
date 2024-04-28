@@ -59,8 +59,8 @@ public class PointRecord {
 
     @Getter
     public enum PointType {
-        KARMA("+", "душнота", "душно", "духотой", "/karma", "душнил"),
-        TOXICITY("++", "токсичность", "токсично", "токсичностью", "/toxicity", "токсиков");
+        KARMA("+", "душно", "душнота", "духотой", "/karma", "душнил"),
+        TOXICITY("++", "токсично", "токсичность", "токсичностью", "/toxicity", "токсиков");
 
         private final String createCommand;
         private final String votePrompt;
@@ -73,11 +73,11 @@ public class PointRecord {
         private static final Map<String, PointType> BY_RATING_COMMAND = Arrays.stream(PointType.values())
                 .collect(Collectors.toMap(val -> val.ratingCommand, val -> val));
         public static Optional<PointType> fromCreateCommand(String command) {
-            return Optional.of(BY_CREATE_COMMAND.get(command));
+            return Optional.ofNullable(BY_CREATE_COMMAND.get(command));
         }
         public static Optional<PointType> fromRatingCommand(String ratingCommand) {
             return BY_RATING_COMMAND.containsKey(ratingCommand)
-                    ? Optional.of(BY_RATING_COMMAND.get(ratingCommand))
+                    ? Optional.ofNullable(BY_RATING_COMMAND.get(ratingCommand))
                     : Optional.empty();
         }
 

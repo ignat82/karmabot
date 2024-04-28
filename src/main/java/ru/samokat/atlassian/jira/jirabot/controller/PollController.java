@@ -37,9 +37,11 @@ public class PollController {
     private static final String CONFIRMED = "confirmed";
     private static final String DECLINED = "declined";
     public Optional<List<BotApiMethod>> handleUpdate(Update update) {
-        Optional<PointRecord.PointType> pointType = PointRecord.PointType.fromCreateCommand(update.getMessage().getText());
-        if (pointType.isPresent()) {
-            return createPoll(update.getMessage(), pointType.get());
+
+        if (update.getMessage() != null) {
+            Optional<PointRecord.PointType> pointType =
+                    PointRecord.PointType.fromCreateCommand(update.getMessage().getText());
+            return pointType.isPresent() ? createPoll(update.getMessage(), pointType.get()) : Optional.empty();
         } else if (update.getCallbackQuery() != null) {
             return processCallback(update.getCallbackQuery());
         }
