@@ -15,7 +15,7 @@ services:
       - docker/jirabot.env
     environment:
       - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
-      - SPRING_PROFILES_ACTIVE=debug
+      - SPRING_PROFILES_ACTIVE=sdk
       - spring.datasource.dialect=org.hibernate.dialect.PostgreSQL14Dialect
 
   db:
