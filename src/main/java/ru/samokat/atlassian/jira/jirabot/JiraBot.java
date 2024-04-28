@@ -9,6 +9,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.samokat.atlassian.jira.jirabot.controller.ActionsController;
 import ru.samokat.atlassian.jira.jirabot.controller.CommandController;
 import ru.samokat.atlassian.jira.jirabot.controller.PollController;
+import ru.samokat.atlassian.jira.jirabot.entity.PointRecord;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,7 +39,7 @@ public class JiraBot extends TelegramLongPollingBot {
         Optional<List<BotApiMethod>> responses = Optional.empty();
         boolean isTextMessage = update.getMessage() != null && update.getMessage().getText() != null;
 
-         if ((isTextMessage && update.getMessage().getText().equals("+"))
+         if ((isTextMessage && PointRecord.PointType.fromCreateCommand(update.getMessage().getText()).isPresent())
                 || update.getCallbackQuery() != null) {
             responses = pollController.handleUpdate(update);
         } else if (update.getMessage() != null && update.getMessage().isCommand()) {
