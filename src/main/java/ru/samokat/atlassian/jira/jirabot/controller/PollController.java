@@ -17,6 +17,7 @@ import ru.samokat.atlassian.jira.jirabot.KarmaAdapter;
 import ru.samokat.atlassian.jira.jirabot.entity.PointRecord;
 import ru.samokat.atlassian.jira.jirabot.entity.PollRecord;
 import ru.samokat.atlassian.jira.jirabot.repository.PollRepository;
+import ru.samokat.atlassian.jira.jirabot.service.ChatService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,6 +35,7 @@ import java.util.stream.Collectors;
 public class PollController {
     private final PollRepository pollRepository;
     private final KarmaAdapter karmaAdapter;
+    private final ChatService chatService;
     private static final String CONFIRMED = "confirmed";
     private static final String DECLINED = "declined";
     public Optional<List<BotApiMethod>> handleUpdate(Update update) {
@@ -99,7 +101,7 @@ public class PollController {
             log.trace("{} has voted already", callbackQuery.getFrom().getUserName());
             String messageText = String.format("%s, а ты ведь не от большого ума несколько раз голосуешь?",
                                                callbackQuery.getFrom().getUserName());
-            return Optional.of(assembleChatMessage(messageText, callbackChatId(callbackQuery), polledMessageId(callbackQuery)));
+            return Optional.of(chatService.assembleChatMessage(messageText, callbackChatId(callbackQuery), polledMessageId(callbackQuery)));
         } else {
             return Optional.empty();
         }
@@ -113,7 +115,7 @@ public class PollController {
         List<BotApiMethod> responses = new ArrayList<>();
         String message = String.format("%s, Вы же в курсе, что за себя голосовать грешновато, и голосуете. Так сильно очко манит?",
                                        voter.getUserName());
-        responses.add(assembleChatMessage(message, pollRecord.getChatId()));
+        responses.add(chatService.assembleChatMessage(message, pollRecord.getChatId()));
         log.trace("user {} tried selfvote", voter.getUserName());
         return Optional.of(responses);
     }
@@ -133,7 +135,7 @@ public class PollController {
 
         if (confirmed == 3) {
             messageText = String.format("%s подтверждена %s голосами 'за' при %s 'против'", pointType.getVotePrompt(), confirmed, declined);
-            responses.add(assembleChatMessage(messageText, chatId, callbackQuery.getMessage().getReplyToMessage().getMessageId()));
+            responses.add(chatService.assembleChatMessage(messageText, chatId, callbackQuery.getMessage().getReplyToMessage().getMessageId()));
             responses.add(karmaAdapter.addPoint(initialMessage.getFrom().getUserName(),
                                                 initialMessage.getFrom().getId(),
                                                 chatId,
@@ -141,7 +143,7 @@ public class PollController {
             log.trace("poll closed. recipient {} received karma point", callbackQuery.getFrom().getUserName());
         } else {
             messageText = String.format("%s и не пахнет, %s! Придется попрощаться с очком", pointType.getVoteFail(), pollRecord.getGiverUsername());
-            responses.add(assembleChatMessage(messageText, chatId, callbackQuery.getMessage().getReplyToMessage().getMessageId()));
+            responses.add(chatService.assembleChatMessage(messageText, chatId, callbackQuery.getMessage().getReplyToMessage().getMessageId()));
             responses.add(karmaAdapter.deductPoint(pollRecord.getGiverUsername(),
                                                    pollRecord.getGiverId(),
                                                    chatId,
@@ -179,11 +181,11 @@ public class PollController {
 
         SendMessage sm;
         if (pollRepository.getByChatIdAndMessageId(message.getChatId(), message.getReplyToMessage().getMessageId()).isPresent()) {
-            sm = assembleChatMessage("зациклило? по два раза сообщения не оцениваем", message.getChatId(), message.getMessageId());
+            sm = chatService.assembleChatMessage("зациклило? по два раза сообщения не оцениваем", message.getChatId(), message.getMessageId());
         } else if (message.getFrom().equals(message.getReplyToMessage().getFrom())) {
-            sm = assembleChatMessage("дома себе подрочи, а не в общем чате", message.getChatId(), message.getMessageId());
+            sm = chatService.assembleChatMessage("дома себе подрочи, а не в общем чате", message.getChatId(), message.getMessageId());
         } else if (message.getReplyToMessage().getFrom().getIsBot()) {
-            sm = assembleChatMessage("робота пылесоса тоже приласкать пытаешься?", message.getChatId(), message.getMessageId());
+            sm = chatService.assembleChatMessage("робота пылесоса тоже приласкать пытаешься?", message.getChatId(), message.getMessageId());
 
         } else {
             PollRecord pollRecord = new PollRecord(message.getChatId(),
@@ -227,15 +229,4 @@ public class PollController {
         return callbackQuery.getMessage().getReplyToMessage().getMessageId();
     }
 
-    private SendMessage assembleChatMessage(String text, long chatId, Integer replyToMessageId ) {
-        SendMessage.SendMessageBuilder messageBuilder = SendMessage.builder();
-        if (replyToMessageId != null) {
-            messageBuilder.replyToMessageId(replyToMessageId);
-        }
-        return messageBuilder.chatId(chatId).text(text).build();
-    }
-
-    private SendMessage assembleChatMessage(String text, long chatId) {
-        return assembleChatMessage(text, chatId, null);
-    }
 }

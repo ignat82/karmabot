@@ -8,6 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.samokat.atlassian.jira.jirabot.controller.ActionsController;
 import ru.samokat.atlassian.jira.jirabot.controller.CommandController;
+import ru.samokat.atlassian.jira.jirabot.controller.MlQuestionController;
 import ru.samokat.atlassian.jira.jirabot.controller.PollController;
 import ru.samokat.atlassian.jira.jirabot.entity.PointRecord;
 
@@ -20,8 +21,9 @@ public class JiraBot extends TelegramLongPollingBot {
     private final CommandController commandController;
     private final PollController pollController;
     private final ActionsController actionsController;
+    private final MlQuestionController mlQuestionController;
     private final String BOT_TOKEN;
-    private static final String BOT_USERNAME = "samokat_jira_bot";
+    private final String BOT_USERNAME;
 
     @Override
     public String getBotUsername() {
@@ -44,6 +46,12 @@ public class JiraBot extends TelegramLongPollingBot {
             responses = pollController.handleUpdate(update);
         } else if (update.getMessage() != null && update.getMessage().isCommand()) {
              responses = commandController.handleUpdate(update);
+        } else if (isTextMessage && update.getMessage().getReplyToMessage() == null
+         && update.getMessage().hasEntities()) {
+             String mention = update.getMessage().getEntities().get(0).getText();
+             if (mention.equals("@" + BOT_USERNAME)) {
+                 responses = mlQuestionController.handleUpdate(update);
+             }
          }
 
         responses.ifPresent(responsesList -> responsesList.forEach(resp -> {

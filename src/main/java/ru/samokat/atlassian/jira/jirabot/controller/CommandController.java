@@ -32,7 +32,6 @@ public class CommandController {
                 log.trace("assembling rating");
                 return assembleRatingForChat(message.getChatId(), pointType.get());
             }
-
         }
 
         return Optional.empty();
