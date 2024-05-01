@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.samokat.atlassian.jira.jirabot.client.gigachat.GigaChatClient;
-import ru.samokat.atlassian.jira.jirabot.client.OpenAiClient;
 import ru.samokat.atlassian.jira.jirabot.entity.PointRecord;
 import ru.samokat.atlassian.jira.jirabot.repository.PointRepository;
 
@@ -19,7 +18,6 @@ import java.util.Optional;
 @Slf4j
 @RequiredArgsConstructor
 public class DebuggerController {
-    private final OpenAiClient openAiClient;
     private final GigaChatClient gigaChatClient;
     private final PointRepository pointRepository;
     private final Gson gson;

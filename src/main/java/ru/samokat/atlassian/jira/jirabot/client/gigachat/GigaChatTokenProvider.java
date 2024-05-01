@@ -2,13 +2,13 @@ package ru.samokat.atlassian.jira.jirabot.client.gigachat;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
-import jakarta.inject.Named;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -16,7 +16,7 @@ import java.time.Instant;
 import java.util.Base64;
 import java.util.UUID;
 
-@Named
+@Component
 @Slf4j
 public class GigaChatTokenProvider {
     private final String oauthUri;

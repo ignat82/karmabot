@@ -1,8 +1,9 @@
 package ru.samokat.atlassian.jira.jirabot.controller;
 
-import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -13,13 +14,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-@Named
+@Component
 @Slf4j
 @RequiredArgsConstructor
-public class MlQuestionController {
+public class MlQuestionController extends AbstractUpdateListener {
     private final GigaChatClient client;
     private final ChatService chatService;
+    @Value("${ru.samokat.atlassian.jira.jirabot.username}")
+    private String BOT_USERNAME;
 
+    @Override
     public Optional<List<BotApiMethod>> handleUpdate(Update update) {
         log.debug("handleUpdate()");
 
@@ -38,5 +42,16 @@ public class MlQuestionController {
                                                                       message.getMessageId());
         return Optional.of(Collections.singletonList(responseToChat));
 
+    }
+
+    @Override
+    public boolean isTarget(Update update) {
+        boolean isTextMessage = update.getMessage() != null && update.getMessage().getText() != null;
+        if (!isTextMessage) {
+            return false;
+        }
+        boolean isMessageToBot = update.getMessage().getEntities() != null &&
+                update.getMessage().getEntities().get(0).getText().equals("@" + BOT_USERNAME);
+        return isMessageToBot;
     }
 }

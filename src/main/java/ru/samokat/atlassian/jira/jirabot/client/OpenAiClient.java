@@ -1,7 +1,6 @@
 package ru.samokat.atlassian.jira.jirabot.client;
 
 import jakarta.annotation.PreDestroy;
-import jakarta.inject.Named;
 import jakarta.ws.rs.ForbiddenException;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -13,10 +12,11 @@ import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-@Named
+@Component
 @Slf4j
 public class OpenAiClient {
     private final Client client;
