@@ -32,12 +32,13 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class PollController {
+public class PollController extends AbstractUpdateListener {
     private final PollRepository pollRepository;
     private final KarmaAdapter karmaAdapter;
     private final ChatService chatService;
     private static final String CONFIRMED = "confirmed";
     private static final String DECLINED = "declined";
+    @Override
     public Optional<List<BotApiMethod>> handleUpdate(Update update) {
 
         if (update.getMessage() != null) {
@@ -49,6 +50,17 @@ public class PollController {
         }
 
         return Optional.empty();
+    }
+
+    @Override
+    public boolean isTarget(Update update) {
+        boolean isTextMessage = update.getMessage() != null && update.getMessage().getText() != null;
+        if (!isTextMessage) {
+            return false;
+        }
+
+        return PointRecord.PointType.fromCreateCommand(update.getMessage().getText()).isPresent()
+                || update.getCallbackQuery() != null;
     }
 
     private Optional<List<BotApiMethod>> processCallback(CallbackQuery callbackQuery) {

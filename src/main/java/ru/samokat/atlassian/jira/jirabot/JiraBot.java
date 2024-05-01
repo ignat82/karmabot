@@ -2,26 +2,24 @@ package ru.samokat.atlassian.jira.jirabot;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import ru.samokat.atlassian.jira.jirabot.controller.AbstractUpdateListener;
 import ru.samokat.atlassian.jira.jirabot.controller.ActionsController;
-import ru.samokat.atlassian.jira.jirabot.controller.CommandController;
-import ru.samokat.atlassian.jira.jirabot.controller.MlQuestionController;
-import ru.samokat.atlassian.jira.jirabot.controller.PollController;
-import ru.samokat.atlassian.jira.jirabot.entity.PointRecord;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
 public class JiraBot extends TelegramLongPollingBot {
-    private final CommandController commandController;
-    private final PollController pollController;
+    @Autowired
+    private Map<String, AbstractUpdateListener> listeners;
     private final ActionsController actionsController;
-    private final MlQuestionController mlQuestionController;
     private final String BOT_TOKEN;
     private final String BOT_USERNAME;
 
@@ -38,23 +36,11 @@ public class JiraBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
 
-        Optional<List<BotApiMethod>> responses = Optional.empty();
-        boolean isTextMessage = update.getMessage() != null && update.getMessage().getText() != null;
+        List<BotApiMethod> responses = new ArrayList<>();
 
-         if ((isTextMessage && PointRecord.PointType.fromCreateCommand(update.getMessage().getText()).isPresent())
-                || update.getCallbackQuery() != null) {
-            responses = pollController.handleUpdate(update);
-        } else if (update.getMessage() != null && update.getMessage().isCommand()) {
-             responses = commandController.handleUpdate(update);
-        } else if (isTextMessage && update.getMessage().getReplyToMessage() == null
-         && update.getMessage().hasEntities()) {
-             String mention = update.getMessage().getEntities().get(0).getText();
-             if (mention.equals("@" + BOT_USERNAME)) {
-                 responses = mlQuestionController.handleUpdate(update);
-             }
-         }
+        listeners.forEach((listenerName, listener) -> listener.notify(update).ifPresent(responses::addAll));
 
-        responses.ifPresent(responsesList -> responsesList.forEach(resp -> {
+        responses.forEach(resp -> {
             try {
                 execute(resp);
             } catch (TelegramApiException e) {
@@ -63,7 +49,7 @@ public class JiraBot extends TelegramLongPollingBot {
                          e.getMessage());
 
             }
-        }));
+        });
     }
 
     public void giveVoice() {

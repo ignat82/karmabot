@@ -15,9 +15,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import ru.samokat.atlassian.jira.jirabot.JiraBot;
 import ru.samokat.atlassian.jira.jirabot.controller.ActionsController;
-import ru.samokat.atlassian.jira.jirabot.controller.CommandController;
-import ru.samokat.atlassian.jira.jirabot.controller.MlQuestionController;
-import ru.samokat.atlassian.jira.jirabot.controller.PollController;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -37,7 +34,7 @@ public class JiraBotConfiguration {
 
     @Bean
     public OkHttpClient customOkHttpClient() throws GeneralSecurityException {
-        // Create a TrustManager that trusts all certificates
+
         TrustManager[] trustAllCerts = new TrustManager[]{
                 new X509TrustManager() {
                     public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) {}
@@ -48,11 +45,9 @@ public class JiraBotConfiguration {
                 }
         };
 
-        // Create a custom SSLContext with the TrustManager
         SSLContext sslContext = SSLContext.getInstance("TLS");
         sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
 
-        // Create an OkHttpClient with the custom SSLContext
         OkHttpClient client = new OkHttpClient.Builder()
                 .sslSocketFactory(sslContext.getSocketFactory(), (X509TrustManager) trustAllCerts[0])
                 .hostnameVerifier((hostname, session) -> true)
@@ -93,18 +88,12 @@ public class JiraBotConfiguration {
     }
 
     @Bean
-    public JiraBot registerBot(CommandController commandController,
-                               PollController pollController,
-                               ActionsController actionsController,
-                               MlQuestionController mlQuestionController,
+    public JiraBot registerBot(ActionsController actionsController,
                                @Value("${ru.samokat.atlassian.jira.jirabot.token}") String botToken,
                                @Value("${ru.samokat.atlassian.jira.jirabot.username}") String botUserName)
             throws TelegramApiException {
         log.debug("registerBot()");
-        JiraBot jiraBot = new JiraBot(commandController,
-                                      pollController,
-                                      actionsController,
-                                      mlQuestionController,
+        JiraBot jiraBot = new JiraBot(actionsController,
                                       botToken,
                                       botUserName);
         TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);

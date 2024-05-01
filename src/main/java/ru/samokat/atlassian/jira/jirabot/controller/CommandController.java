@@ -19,25 +19,27 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class CommandController {
+public class CommandController extends AbstractUpdateListener {
     private final PointRepository pointRepository;
 
+    @Override
     public Optional<List<BotApiMethod>> handleUpdate(Update update) {
         log.debug("handleUpdate()");
         Message message = update.getMessage();
 
-        if(message.isCommand()) {
-            Optional<PointRecord.PointType> pointType = PointRecord.PointType.fromRatingCommand(message.getText());
-            if (pointType.isPresent()) {
-                log.trace("assembling rating");
-                return assembleRatingForChat(message.getChatId(), pointType.get());
-            }
-        }
+        log.trace("assembling rating");
+        return assembleRatingForChat(message.getChatId(),
+                                     PointRecord.PointType.fromRatingCommand(message.getText()).get());
 
-        return Optional.empty();
     }
 
-    public Optional<List<BotApiMethod>> assembleRatingForChat(long chatId, PointRecord.PointType pointType) {
+    @Override
+    public boolean isTarget(Update update) {
+        boolean isCommand = update.getMessage() != null && update.getMessage().isCommand();
+        return isCommand && PointRecord.PointType.fromRatingCommand(update.getMessage().getText()).isPresent();
+    }
+
+    private Optional<List<BotApiMethod>> assembleRatingForChat(long chatId, PointRecord.PointType pointType) {
         String messagePrefix = String.format("рейтинг %s на сегодня:\n\n", pointType.getRatingTerm());
         String rating = pointRepository.getByChatIdAndPointTypeName(chatId, pointType.name())
                                        .map(ratingList -> {
