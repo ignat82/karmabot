@@ -15,5 +15,5 @@ COPY --from=extractor /app/dependencies/ ./
 COPY --from=extractor /app/spring-boot-loader/ ./
 COPY --from=extractor /app/snapshot-dependencies/ ./
 COPY --from=extractor /app/application/ ./
-ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher"]
+ENTRYPOINT ["java", "org.springframework.boot.loader.launch.JarLauncher"]
 
