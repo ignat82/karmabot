@@ -22,10 +22,16 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<properties>
+		<spring-boot.repackage.skip>false</spring-boot.repackage.skip>
 		<org.projectlombok.version>1.18.30</org.projectlombok.version>
 		<java.version>17</java.version>
 	</properties>
 	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-loader</artifactId>
+
+		</dependency>
 		<dependency>
 			<groupId>com.squareup.okhttp3</groupId>
 			<artifactId>okhttp</artifactId>
@@ -103,6 +109,11 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<layers>
+						<enabled>true</enabled>
+					</layers>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
