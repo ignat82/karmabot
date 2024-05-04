@@ -15,8 +15,8 @@ services:
       - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
       - SPRING_PROFILES_ACTIVE=sdk
       - spring.datasource.dialect=org.hibernate.dialect.PostgreSQL14Dialect
-    volumes:
-      - jirabot_logs:/log
+#    volumes:
+#      - jirabot_logs:/log
 
   db:
     image: 'postgres:14-alpine'
@@ -30,5 +30,5 @@ services:
 
 volumes:
   db_data:
-  jirabot_logs:
+#  jirabot_logs:
 
