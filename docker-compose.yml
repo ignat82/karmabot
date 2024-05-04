@@ -31,8 +31,4 @@ services:
 volumes:
   db_data:
   jirabot_logs:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /opt/jirabot_project/karmabot/docker
+

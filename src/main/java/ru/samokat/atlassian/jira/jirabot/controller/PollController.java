@@ -54,13 +54,16 @@ public class PollController extends AbstractUpdateListener {
 
     @Override
     public boolean isTarget(Update update) {
+        if (update.getCallbackQuery() != null) {
+            return true;
+        }
+
         boolean isTextMessage = update.getMessage() != null && update.getMessage().getText() != null;
         if (!isTextMessage) {
             return false;
         }
 
-        return PointRecord.PointType.fromCreateCommand(update.getMessage().getText()).isPresent()
-                || update.getCallbackQuery() != null;
+        return PointRecord.PointType.fromCreateCommand(update.getMessage().getText()).isPresent();
     }
 
     private Optional<List<BotApiMethod>> processCallback(CallbackQuery callbackQuery) {
