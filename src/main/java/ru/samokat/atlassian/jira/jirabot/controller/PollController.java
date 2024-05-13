@@ -157,12 +157,9 @@ public class PollController extends AbstractUpdateListener {
                                                 PointRecord.PointType.valueOf(pollRecord.getPointTypeName())).get());
             log.trace("poll closed.  recipient {} received karma point", callbackQuery.getFrom().getUserName());
         } else {
-            messageText = String.format("%s и не пахнет, %s! Придется попрощаться с очком", pointType.getVoteFail(), pollRecord.getGiverUsername());
+            messageText = String.format("%s и не пахнет, %s!", pointType.getVoteFail(), pollRecord.getGiverUsername());
             responses.add(chatService.assembleChatMessage(messageText, chatId, callbackQuery.getMessage().getReplyToMessage().getMessageId()));
-            responses.add(karmaAdapter.deductPoint(pollRecord.getGiverUsername(),
-                                                   pollRecord.getGiverId(),
-                                                   chatId,
-                                                   PointRecord.PointType.valueOf(pollRecord.getPointTypeName())).get());
+
             log.trace("poll closed. giver {} lost karma point", callbackQuery.getFrom().getUserName());
         }
         return responses;
