@@ -186,7 +186,8 @@ public class PollController extends AbstractUpdateListener {
     private Optional<List<BotApiMethod>> createPoll(Message message, PointRecord.PointType pointType) {
         log.debug("createPoll()");
 
-        if (message.getReplyToMessage() == null || PointRecord.PointType.fromCreateCommand(message.getReplyToMessage().getText()).isEmpty()) {
+        if (message.getReplyToMessage() == null ||
+                PointRecord.PointType.fromCreateCommand(message.getReplyToMessage().getText()).isPresent()) {
             log.warn("no message to poll about");
             return Optional.of(Collections.singletonList(
                     chatService.assembleChatMessage("глаза разуй, еба... оцениваем сообщения, а не команды",
