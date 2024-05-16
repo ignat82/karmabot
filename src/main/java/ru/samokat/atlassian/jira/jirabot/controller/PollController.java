@@ -149,7 +149,7 @@ public class PollController extends AbstractUpdateListener {
         PointRecord.PointType pointType = PointRecord.PointType.valueOf(pollRecord.getPointTypeName());
 
         if (confirmed == 3) {
-            messageText = String.format("%s подтверждена %s голосами 'за' при %s 'против'", pointType.getVotePrompt(), confirmed, declined);
+            messageText = String.format("%s подтверждена %s голосами 'за' при %s 'против'", pointType.getVoteSuccess(), confirmed, declined);
             responses.add(chatService.assembleChatMessage(messageText, chatId, callbackQuery.getMessage().getReplyToMessage().getMessageId()));
             responses.add(karmaAdapter.addPoint(initialMessage.getFrom().getUserName(),
                                                 initialMessage.getFrom().getId(),
