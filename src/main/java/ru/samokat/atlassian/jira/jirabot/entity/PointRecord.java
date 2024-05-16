@@ -59,7 +59,7 @@ public class PointRecord {
 
     @Getter
     public enum PointType {
-        KARMA("+", "душно", "душнота", "духотой", "душноты", "/karma", "душнил"),
+        KARMA(   "+",  "душно",    "душнота",     "духотой",      "душноты",     "/karma",    "душнил"),
         TOXICITY("++", "токсично", "токсичность", "токсичностью", "токсичности", "/toxicity", "токсиков");
 
         private final String createCommand;
